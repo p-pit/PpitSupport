@@ -1,0 +1,74 @@
+<?php 
+header('Content-Type: text/csv; charset=utf-8');
+header("Content-disposition: filename=contacts-".date('Y-m-d').".csv");
+echo "\xEF\xBB\xBF";
+ 
+echo
+$this->translate('N° commande UGAP', 'ppit-order', $context->getLocale()).";".
+(($type == 'part_1') ? $orderProperties['property_15']['labels'][$context->getLocale()].";" : '').
+(($type == 'part_1') ? $this->translate('Quotation identifier', 'ppit-order', $context->getLocale()).";" : '').
+(($type == 'part_1') ? $orderProperties['property_8']['labels'][$context->getLocale()].";" : '').
+(($type == 'part_1') ? $orderProperties['property_9']['labels'][$context->getLocale()].";" : '').
+(($type == 'part_1') ? $orderProperties['property_10']['labels'][$context->getLocale()].";" : '').
+(($type == 'part_1') ? $orderProperties['property_2']['labels'][$context->getLocale()].";" : '').
+(($type == 'part_2' || $type == 'part_3') ? $orderProperties['property_1']['labels'][$context->getLocale()].";" : '').
+(($type == 'part_1') ? $this->translate('Date réception commande', 'ppit-order', $context->getLocale()).";" : '').
+(($type == 'part_2' || $type == 'part_3') ? $orderProperties['property_2']['labels'][$context->getLocale()].";" : '').
+$this->translate('Status', 'ppit-order', $context->getLocale()).";".
+(($type == 'part_2' || $type == 'part_3') ? $this->translate('Invoice num.', 'ppit-order', $context->getLocale()).";" : '').
+$orderProperties['property_3']['labels'][$context->getLocale()].";".
+$orderProperties['property_4']['labels'][$context->getLocale()].";".
+$orderProperties['property_5']['labels'][$context->getLocale()].";".
+$this->translate('Serial number', 'ppit-order', $context->getLocale()).";".
+$this->translate('Changed serial number', 'ppit-order', $context->getLocale()).";".
+(($type == 'part_1') ? $this->translate('Date de départ Venray', 'ppit-order', $context->getLocale()).";" : '').
+(($type == 'part_1') ? $this->translate('N° ASN LIV', 'ppit-order', $context->getLocale()).";" : '').
+(($type == 'part_1') ? $this->translate('Date installation réelle', 'ppit-order', $context->getLocale()).";" : '').
+(($type == 'part_1') ? $this->translate('N° ASN LIV1', 'ppit-order', $context->getLocale()).";" : '').
+(($type == 'part_1') ? $this->translate('Date mise en service', 'ppit-order', $context->getLocale()).";" : '').
+(($type == 'part_1') ? $this->translate('N° ASN LIV2', 'ppit-order', $context->getLocale()).";" : '').
+$orderProperties['property_16']['labels'][$context->getLocale()].";".
+(($type == 'part_1') ? $orderProperties['property_11']['labels'][$context->getLocale()].";" : '').
+(($type == 'part_1') ? $orderProperties['property_12']['labels'][$context->getLocale()].";" : '').
+$this->translate('Excl. tax order total', 'ppit-order', $context->getLocale())."\n";
+
+foreach ($orders as $order) {
+	if ($order->identifier) $identifier = "'".$order->identifier; else $identifier = '';
+	if ($order->property_15) $property_15 = "'".$order->property_15; else $property_15 = '';
+	if ($order->quotation_identifier) $quotation_identifier = "'".$order->quotation_identifier; else $quotation_identifier = '';
+	if ($order->property_8) $property_8 = "'".$order->property_8; else $property_8 = '';
+	if ($order->property_9) $property_9 = "'".$order->property_9; else $property_9 = '';
+	if ($order->property_10) $property_10 = "'".$order->property_10; else $property_10 = '';
+	if ($order->property_1) $property_1 = "'".$order->property_1; else $property_1 = '';
+	if ($order->invoice_identifier) $invoice_identifier = "'".$order->invoice_identifier; else $invoice_identifier = '';
+	if ($order->uniqueOrderProduct->equipment_identifier) $equipment_identifier = "'".$order->uniqueOrderProduct->equipment_identifier; else $equipment_identifier = '';
+	if ($order->uniqueOrderProduct->changed_equipment_identifier) $changed_equipment_identifier = "'".$order->uniqueOrderProduct->changed_equipment_identifier; else $changed_equipment_identifier = '';
+	
+	echo
+	$identifier.";".
+	(($type == 'part_1') ? $property_15.";" : '').
+	(($type == 'part_1') ? $quotation_identifier.";" : '').
+	(($type == 'part_1') ? $property_8.";" : '').
+	(($type == 'part_1') ? $property_9.";" : '').
+	(($type == 'part_1') ? $property_10.";" : '').
+	$order->property_2.";".
+	(($type == 'part_2' || $type == 'part_3') ? $property_1.";" : '').
+	(($type == 'part_1') ? $order->order_date.";" : '').
+	$statusDescriptor[$order->status]['labels'][$context->getLocale()].";".
+	(($type == 'part_2' || $type == 'part_3') ? $invoice_identifier.";" : '').
+	$order->property_3.";".
+	$order->property_4.";".
+	$order->property_5.";".
+	$equipment_identifier.";".
+	$changed_equipment_identifier.";".
+	(($type == 'part_1') ? $context->decodeDate($order->uniqueOrderProduct->shipment_date).";" : '').
+	(($type == 'part_1') ? $order->uniqueOrderProduct->shipment_message_id.";" : '').
+	(($type == 'part_1') ? $context->decodeDate($order->uniqueOrderProduct->delivery_date).";" : '').
+	(($type == 'part_1') ? $order->uniqueOrderProduct->delivery_message_id.";" : '').
+	(($type == 'part_1') ? $context->decodeDate($order->uniqueOrderProduct->commissioning_date).";" : '').
+	(($type == 'part_1') ? $order->uniqueOrderProduct->commissioning_message_id.";" : '').
+	$context->decodeDate($order->property_16).";".
+	(($type == 'part_1') ? $order->property_11.";" : '').
+	(($type == 'part_1') ? $order->property_12.";" : '').
+	$context->formatFloat($order->tax_inclusive, 2)."\n";
+}

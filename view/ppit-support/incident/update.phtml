@@ -1,0 +1,300 @@
+<br>
+<div class="panel panel-default">
+	<div class="panel-heading">
+<?php
+if ($act == 'confirm') $title = 'Confirm an order'; 
+elseif ($act == 'reject') $title = 'Reject an order';
+elseif ($act == 'register') $title = 'Register an order';
+elseif ($act == 'reinit') $title = 'Re-initialize an order';
+?>
+		<strong><?php echo $this->translate($title, 'ppit-order', $context->getLocale()) ?></strong>
+<!-- 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php //echo $this->translate('Close', 'ppit-core', $context->getLocale()) ?>" id="<?php //echo 'update-remove-anchor-'.$order->id ?>">
+				<span class="glyphicon glyphicon-remove" id="<?php //echo 'remove-anchor-'.$order->id ?>-glyphicon"></span>
+			</button>
+		</div> -->
+	</div>
+	<div class="panel-body">
+
+		<!-- Form header -->
+		<?php echo $this->partial('/partials/form-header', array(
+					'update_time' => $order->update_time,
+					'message' => $message,
+					'error' => $error,
+					'csrfForm' => $csrfForm,
+					'context' => $context,
+		));
+		$properties = array('update_time' => 'hidden');
+		?>
+
+<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+		
+<?php if ($act == 'register') : 	$buttonLabel = $this->translate('Register', 'ppit-order', $context->getLocale()); ?>
+
+<!--  Register -->
+		
+		<!-- Quotation identifier -->
+		<div class="form-group" id="quotation_identifier_group">
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('Quotation identifier', 'ppit-order', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input name="quotation_identifier" id="quotation_identifier" class="form-control" value="<?php echo $order->quotation_identifier ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="quotation_identifier_error"></p></div>
+		</div>
+		
+		<!-- Property 8 (specific) -->
+		<div class="form-group" id="property_8_group">
+			<label class="col-sm-5 control-label">* <?php echo $orderProperties['property_8']['labels'][$context->getLocale()] ?></label>
+			<div class="col-sm-7">
+				<input name="property_8" id="property_8" class="form-control" value="<?php echo $order->property_8 ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="property_8_error"></p></div>
+		</div>
+		
+		<!-- Property 9 (specific) -->
+		<div class="form-group" id="property_9_group">
+			<label class="col-sm-5 control-label">* <?php echo $orderProperties['property_9']['labels'][$context->getLocale()] ?></label>
+			<div class="col-sm-7">
+				<input name="property_9" id="property_9" class="form-control" value="<?php echo $order->property_9 ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="property_9_error"></p></div>
+		</div>
+	
+		<!-- Property 10 (specific) -->
+		<div class="form-group" id="property_10_group">
+			<label class="col-sm-5 control-label">* <?php echo $orderProperties['property_10']['labels'][$context->getLocale()] ?></label>
+			<div class="col-sm-7">
+				<input name="property_10" id="property_10" class="form-control" value="<?php echo $order->property_10 ?>"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="property_10_error"></p></div>
+		</div>
+	
+		<!-- Property 11 (specific) -->
+		<div class="form-group" id="property_11_group">
+			<label class="col-sm-5 control-label">* <?php echo $orderProperties['property_11']['labels'][$context->getLocale()] ?></label>
+			<div class="col-sm-7">
+				<select name="property_11" id="property_11" class="form-control"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+					<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+					<option value="cash" <?php if ($order->property_11 == 'cash') echo 'selected="selected"'; ?>>Cash</option>
+					<option value="leasing" <?php if ($order->property_11 == 'leasing') echo 'selected="selected"'; ?>>Leasing</option>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="property_11_error"></p></div>
+		</div>
+	
+		<!-- Property 12 (specific) -->
+		<div class="form-group" id="property_12_group">
+			<label class="col-sm-5 control-label">* <?php echo $orderProperties['property_12']['labels'][$context->getLocale()] ?></label>
+			<div class="col-sm-7">
+				<select name="property_12" id="property_12" class="form-control"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>>
+					<option value=""><-- <?php echo $this->translate('Please choose', 'ppit-core', $context->getLocale()) ?> --></option>
+					<option value="Oui" <?php if ($order->property_12 == 'Oui') echo 'selected="selected"'; ?>>Oui</option>
+					<option value="Non" <?php if ($order->property_12 == 'Non') echo 'selected="selected"'; ?>>Non</option>
+				</select>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="property_12_error"></p></div>
+		</div>
+
+		<!-- Comment -->
+		<div class="form-group" id="comment_group">
+			<label class="col-sm-5 control-label">* <?php echo $this->translate('Commentaire (interne Xerox)', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<textarea name="comment" id="comment" rows="3" class="form-control"<?php if (isset($isDisabled) && $isDisabled) echo ' disabled ="disabled"' ?>></textarea>
+			</div>
+			<div class="col-sm-12"><p class="help-block" id="comment_error"></p></div>
+		</div>
+		
+		<!-- Caption -->
+		<input type="hidden" id="caption" name="caption" value="<?php echo $order->caption ?>" />
+		<?php $properties['caption'] = 'hidden' ?>
+		
+		<!-- Description -->
+		<input type="hidden" id="description" name="description" value="<?php echo $order->description ?>" />
+		<?php $properties['description'] = 'hidden' ?>
+		
+		<!-- Hoped delivery date-->
+		<input type="hidden" id="hoped_delivery_date" name="hoped_delivery_date" value="<?php echo $order->hoped_delivery_date ?>" />
+		<?php $properties['hoped_delivery_date'] = 'hidden' ?>
+
+		<!-- Invoice identifier -->
+		<input type="hidden" id="invoice_identifier" name="invoice_identifier" value="<?php echo $order->invoice_identifier ?>" />
+		<?php $properties['invoice_identifier'] = 'hidden' ?>
+
+		<!-- Specific properties -->
+		<input type="hidden" id="property_1" name="property_1" value="<?php echo $order->property_1 ?>" />
+		<?php $properties['property_1'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_2" name="property_2" value="<?php echo $order->property_2 ?>" />
+		<?php $properties['property_2'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_3" name="property_3" value="<?php echo $order->property_3 ?>" />
+		<?php $properties['property_3'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_4" name="property_4" value="<?php echo $order->property_4 ?>" />
+		<?php $properties['property_4'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_5" name="property_5" value="<?php echo $order->property_5 ?>" />
+		<?php $properties['property_5'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_6" name="property_6" value="<?php echo $order->property_6 ?>" />
+		<?php $properties['property_6'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_7" name="property_7" value="<?php echo $order->property_7 ?>" />
+		<?php $properties['property_7'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_13" name="property_13" value="<?php echo $order->property_13 ?>" />
+		<?php $properties['property_13'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_14" name="property_14" value="<?php echo $order->property_14 ?>" />
+		<?php $properties['property_14'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_15" name="property_15" value="<?php echo $order->property_15 ?>" />
+		<?php $properties['property_15'] = 'hidden' ?>
+
+<?php elseif ($act == 'reinit') : $buttonLabel = $this->translate('Re-initialize', 'ppit-order', $context->getLocale()); ?>
+
+<!-- Reinit -->
+		
+		<!-- Caption -->
+		<input type="hidden" id="caption" name="caption" value="<?php echo $order->caption ?>" />
+		<?php $properties['caption'] = 'hidden' ?>
+		
+		<!-- Description -->
+		<input type="hidden" id="description" name="description" value="<?php echo $order->description ?>" />
+		<?php $properties['description'] = 'hidden' ?>
+		
+		<!-- Hoped delivery date-->
+		<input type="hidden" id="hoped_delivery_date" name="hoped_delivery_date" value="<?php echo $order->hoped_delivery_date ?>" />
+		<?php $properties['hoped_delivery_date'] = 'hidden' ?>
+
+		<!-- Quotation identifier -->
+		<input type="hidden" id="quotation_identifier" name="quotation_identifier" value="<?php echo $order->quotation_identifier ?>" />
+		<?php $properties['quotation_identifier'] = 'hidden' ?>
+
+		<!-- Invoice identifier -->
+		<input type="hidden" id="invoice_identifier" name="invoice_identifier" value="<?php echo $order->invoice_identifier ?>" />
+		<?php $properties['invoice_identifier'] = 'hidden' ?>
+		
+		<!-- Specific properties -->
+		
+		<input type="hidden" id="property_1" name="property_1" value="<?php echo $order->property_1 ?>" />
+		<?php $properties['property_1'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_2" name="property_2" value="<?php echo $order->property_2 ?>" />
+		<?php $properties['property_2'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_3" name="property_3" value="<?php echo $order->property_3 ?>" />
+		<?php $properties['property_3'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_4" name="property_4" value="<?php echo $order->property_4 ?>" />
+		<?php $properties['property_4'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_5" name="property_5" value="<?php echo $order->property_5 ?>" />
+		<?php $properties['property_5'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_6" name="property_6" value="<?php echo $order->property_6 ?>" />
+		<?php $properties['property_6'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_7" name="property_7" value="<?php echo $order->property_7 ?>" />
+		<?php $properties['property_7'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_8" name="property_8" value="<?php echo $order->property_8 ?>" />
+		<?php $properties['property_8'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_9" name="property_9" value="<?php echo $order->property_9 ?>" />
+		<?php $properties['property_9'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_10" name="property_10" value="<?php echo $order->property_10 ?>" />
+		<?php $properties['property_10'] = 'hidden' ?>
+	
+		<input type="hidden" id="property_11" name="property_11" value="<?php echo $order->property_11 ?>" />
+		<?php $properties['property_11'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_12" name="property_12" value="<?php echo $order->property_12 ?>" />
+		<?php $properties['property_12'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_13" name="property_13" value="<?php echo $order->property_13 ?>" />
+		<?php $properties['property_13'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_14" name="property_14" value="<?php echo $order->property_14 ?>" />
+		<?php $properties['property_14'] = 'hidden' ?>
+		
+		<input type="hidden" id="property_15" name="property_15" value="<?php echo $order->property_15 ?>" />
+		<?php $properties['property_15'] = 'hidden' ?>
+		
+<?php endif;?>
+
+<?php if ($message == 'OK') : ?>
+
+<!-- Foot return link -->
+<!--			<div class="form-group" id="foot_return_link">
+				<div class="col-sm-4">&nbsp;</div>
+				<div class="col-sm-8">
+					<?php /*echo $this->partial('/partials/action-widget.phtml', array(
+							'context' => $context,
+							'target' => 'order-update-panel-'.$order->id,
+							'id' => 'update-foot-return-anchor-'.$order->id,
+							'text' => $this->translate('Close', 'ppit-core', $context->getLocale()),
+					)) */?>
+				</div>
+			</div> -->
+
+<?php else : ?>
+
+<!-- Submit button -->
+		    <div class="form-group">
+				<div class="col-sm-4">&nbsp;</div>
+				<div class="col-sm-8">
+					<input name="submit" type="submit" id="submit-button" class="btn <?php echo ($act == 'reject' || $act == 'reinit') ? 'btn-danger' : 'btn-warning' ?>" value="<?php echo $buttonLabel ?>">
+					&nbsp;&nbsp;
+					<?php echo $this->partial('/partials/action-widget.phtml', array(
+							'context' => $context,
+							'target' => 'order-update-panel-'.$order->id,
+							'id' => 'update-cancel-anchor-'.$order->id,
+							'text' => $this->translate('Cancel', 'ppit-core', $context->getLocale()),
+					)) ?>
+				</div>
+			</div>
+
+<?php endif;?>
+
+		</form>
+	</div>
+</div>
+
+<script id='order/update-<?php echo $order->id ?>-script'>
+
+eval(document.getElementById('update-remove-anchor-<?php echo $order->id ?>-script').innerHTML);
+	
+<?php if ($act == 'confirm') : ?>
+	$("#quotation_identifier").focus();
+<?php elseif ($act == 'reject') : ?>
+	$("#property_7").focus();
+<?php elseif ($act == 'register') : ?>
+	$("#property_8").focus();
+<?php endif;?>
+
+<?php if ($message == 'OK') : ?>
+
+	eval(document.getElementById('update-foot-return-anchor-<?php echo $order->id ?>-script').innerHTML);
+	
+<?php else : ?>
+
+	eval(document.getElementById('update-cancel-anchor-<?php echo $order->id ?>-script').innerHTML);
+
+// Submit
+	<?php 
+	echo $this->partial('/partials/form-script', array(
+			'context' => $context,
+			'target' => 'order-update-panel-'.$order->id,
+			'formRoute' => $this->url('order/update', array('id' => $id, 'act' => $act)),
+			'formScript' =>'order/update-'.$order->id.'-script',
+			'properties' => $properties,
+			'mainTarget' => 'order-list-panel',
+			'mainRoute' => $this->url('order/list', array('type' => 'part_1')),
+			'mainScript' =>'order/list-script',
+	)) ?>
+
+<?php endif;?>
+
+</script>

@@ -1,0 +1,21 @@
+<?php 
+if ($xmlMessage->type == 'OSI') {
+	header('Content-Type: text/csv; charset=utf-8');
+	header("Content-disposition: filename=osi-".$xmlMessage->id.".csv");
+	echo "\xEF\xBB\xBF";
+	foreach ($context->getConfig()['ppitOrderSettings']['orderImportProperties'] as $property) {
+		echo $property['name'].';';
+	}
+	echo "\n";
+	foreach (json_decode($xmlMessage->xml_content, true) as $row) {
+		foreach ($row as $id => $propertyValue) {
+			echo $propertyValue.';';
+		}
+		echo "\n";
+	}
+}
+else {
+	header('Content-Type: text/xml; charset=utf-8');
+	header("Content-disposition: filename=message-".$xmlMessage->id.".xml");
+	echo $xmlMessage->xml_content;
+}

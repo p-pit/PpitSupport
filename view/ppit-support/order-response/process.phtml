@@ -1,0 +1,82 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<?php echo $this->translate('Traiter un fichier OSI', 'ppit-order', $context->getLocale()) ?>
+ 		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-default" title="<?php echo $this->translate('Close', 'ppit-core', $context->getLocale()) ?>" id="<?php echo 'remove-anchor' ?>">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+ 		</div>
+	</div>
+    <div class="panel-body">
+
+		<!-- Form header -->
+		<?php echo $this->partial('/partials/form-header', array(
+					'update_time' => null,
+					'message' => $message,
+					'error' => $error,
+					'csrfForm' => $csrfForm,
+					'context' => $context,
+		)) ?>
+
+		<?php if ($message == 'OK') $isDisabled = true; else $isDisabled = false; ?>
+
+<?php if ($message == 'OK') : ?>
+
+<!-- Foot return link -->
+		<div class="form-group" id="foot_return_link">
+			<div class="col-sm-5">&nbsp;</div>
+			<div class="col-sm-7">
+				<button type="button" class="btn btn-default" title="<?php echo $this->translate('Close', 'ppit-core', $context->getLocale()) ?>" id="<?php echo 'return-anchor' ?>">
+					<span><?php echo $this->translate('Return', 'ppit-core', $context->getLocale()) ?></span>
+				</button>
+			</div>
+		</div>
+
+<?php else : ?>
+
+<!-- Submit button -->
+	    <div class="form-group">
+			<div class="col-sm-5">&nbsp;</div>
+			<div class="col-sm-7">
+				<input name="submit" type="submit" id="update-submit-button" class="btn btn-warning" value="<?php echo $this->translate('Confirm', 'ppit-core', $context->getLocale()) ?>">
+				&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" title="<?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?>" id="<?php echo 'cancel-anchor' ?>">
+					<span><?php echo $this->translate('Cancel', 'ppit-core', $context->getLocale()) ?></span>
+				</button>
+			</div>
+		</div>
+
+<?php endif;?>
+
+	</div>
+</div>
+
+<script id="orderMessage/submit-script">
+
+// Return to list
+eval(document.getElementById('update-remove-anchor-script').innerHTML);
+
+<?php if ($message == 'OK') : ?>
+
+	eval(document.getElementById('update-foot-return-anchor-script').innerHTML);
+
+<?php else : ?>
+
+	eval(document.getElementById('update-cancel-anchor-script').innerHTML);
+
+	// Submit
+	<?php
+	$properties = array('update_time' => 'hidden');
+	echo $this->partial('/partials/form-script', array(
+			'context' => $context,
+			'formRoute' => $this->url('orderMessage/submit', array('id' => $id)),
+			'formScript' =>'orderMessage/submit-script',
+			'properties' => $properties,
+			'mainRoute' => $this->url('orderMessage/index'),
+			'mainScript' =>'orderSubmit/index-script',
+			'hideForm' => false,
+	)) ?>
+
+<?php endif;?>
+
+</script>

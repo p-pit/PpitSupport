@@ -1,0 +1,332 @@
+
+function connectRemoveIcon(type, id, target)
+{
+	$('#' + id).click(function () {
+		$('#' + target).hide();
+		filterOrderList(type);
+	});
+}
+
+function getParams(type) {
+
+	// Create a new FormData object.
+	var params = '?', todo = (type == 'part_1' || <?php echo ($context->hasRole('business_owner')) ? 'true' : 'false' ?>) ? true : false;
+
+	var identifier = document.getElementById('identifier').value;
+	if (identifier.length >= 2) { params += 'identifier=' + identifier + '&'; todo = false; }
+
+	if (type == 'part_1') {
+		var property_15 = document.getElementById('property_15').value;
+		if (property_15.length >= 2) { params += 'property_15=' + property_15 + '&'; todo = false; }
+	}
+	
+	if (type == 'part_2' || type == 'part_3') {
+
+		var serial_number = document.getElementById('serial_number').value;
+		if (serial_number.length >= 2) { params += 'property_1=' + serial_number + '&'; todo = false; }
+
+		$("#min_due_date").datepicker();
+		var min_due_date = document.getElementById('min_due_date').value;
+		if (min_due_date) min_due_date = encodeDate(min_due_date);
+		if (min_due_date.length >= 2) { params += 'min_property_2=' + min_due_date + '&'; todo = false; }
+
+		$("#max_due_date").datepicker();
+		var max_due_date = document.getElementById('max_due_date').value;
+		if (max_due_date) max_due_date = encodeDate(max_due_date);
+		if (max_due_date.length >= 2) { params += 'max_property_2=' + max_due_date + '&'; todo = false; }
+	}
+
+	var status = document.getElementById('status').value;
+	if (status.length >= 2) { params += 'status=' + status + '&'; todo = false; }
+
+	if (type == 'part_2' || type == 'part_3') {
+		var invoice_identifier = document.getElementById('invoice_identifier').value;
+		if (invoice_identifier.length >= 2) { params += 'invoice_identifier=' + invoice_identifier + '&'; todo = false; }
+	}
+
+	var product_caption = document.getElementById('product_caption').value;
+	if (product_caption.length >= 2) { params += 'property_3=' + product_caption + '&'; todo = false; }
+
+	var installation_company_name = document.getElementById('installation_company_name').value;
+	if (installation_company_name.length >= 2) { params += 'property_4=' + installation_company_name + '&'; todo = false; }
+
+	var delivery_city = document.getElementById('delivery_city').value;
+	if (delivery_city.length >= 2) { params += 'property_5=' + delivery_city + '&'; todo = false; }
+
+	return params;
+}
+
+//Export the list
+function exportOrderList(type) {
+
+	var params = getParams(type);
+	document.location.href = '<?php echo $this->url('order/export') ?>/' + type + params;
+}
+
+function eraseOrderSearch(type) {
+	$('#identifier').val('');
+	$('#property_15').val('');
+	
+	<?php //if ($type == 'part_2' || $type == 'part_3') : ?>
+/*		$('#serial_number').val('');
+		$('#min_due_date').val('');
+		$('#max_due_date').val('');*/
+	<?php //endif;?>
+
+	$('#status').val('');
+
+	<?php //if ($type == 'part_2' || $type == 'part_3') : ?>
+//		$('#invoice_identifier').val('');
+	<?php //endif;?>
+
+	$('#product_caption').val('');
+	$('#installation_company_name').val('');
+	$('#delivery_city').val('');
+	getOrderList(type, getParams(type), 'identifier', 'ASC');
+}
+
+function sortOrderList(type, criterion) {
+
+	var dir;
+	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
+	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
+	if (criterion + '-anchor' == ascCriterion) dir = 'DESC'; else dir = 'ASC';
+	getOrderList(type, getParams(type), criterion, dir);
+}
+
+function filterOrderList(type) {
+
+	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
+	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
+	if (ascCriterion) {
+		criterion = ascCriterion.split('-')[0];
+		dir = 'ASC';
+	}
+	getOrderList(type, getParams(type), criterion, dir);
+}
+
+function connectOrderSearchInputs(type) {
+
+	if (type == 'part_2' || type == 'part_3') {
+		$("#min_due_date").datepicker();
+		$("#max_due_date").datepicker();
+	}
+	
+	$('#export-button').unbind();
+	$('#export-button').click(function () { exportOrderList(type); });
+	
+	$('#identifier').unbind();
+	$('#identifier').keyup(function () { filterOrderList(type); });
+	
+	if (type == 'part_1') {
+		$('#property_15').unbind();
+		$('#property_15').keyup(function () { filterOrderList(type); });
+	}
+
+	if (type == 'part_2' || type == 'part_3') {
+		$('#serial_number').unbind();
+		$('#serial_number').keyup(function () { filterOrderList(type); });
+		$('#min_due_date').unbind();
+		$('#min_due_date').change(function () { filterOrderList(type); });
+		$('#max_due_date').unbind();
+		$('#max_due_date').change(function () { filterOrderList(type); });
+	}
+
+	$('#status').unbind();
+	$('#status').change(function () { filterOrderList(type); });
+	
+	if (type == 'part_2' || type == 'part_3') {
+		$('#invoice_identifier').unbind();
+		$('#invoice_identifier').keyup(function () { filterOrderList(type); });
+	}
+	
+	$('#product_caption').unbind();
+	$('#product_caption').keyup(function () { filterOrderList(type); });
+	$('#installation_company_name').unbind();
+	$('#installation_company_name').keyup(function () { filterOrderList(type); });
+	$('#delivery_city').unbind();
+	$('#delivery_city').keyup(function () { filterOrderList(type); });
+
+	$('#erase-button').unbind();
+	$('#erase-button').click(function () { eraseOrderSearch(type); });
+}
+
+// Load the list
+function getOrderList(type, params, major, dir) {		
+
+	// Execute the ajax request
+	route = '<?php echo $this->url('order/list') ?>/' + type + params + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('order-list-panel').innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('showing panel: order-list-panel, url = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+			
+			// Connect the sort anchors
+			$('.ppit-sort-anchor').each(function () {
+				$(this).click(function () {
+					sortOrderList(type, $(this).attr('id').split('-')[0]);
+				});
+			});
+	
+			// Connect the search inputs
+			connectOrderSearchInputs(type);
+
+			// Connect the detail anchors
+			$('.order-detail-anchor').each(function () {
+				$(this).click(function () {
+					getOrderDetail(type, $(this).attr('id').split('_')[1]);
+				});
+			});
+		}
+	}
+	xhttp.send();
+}
+
+function connectAuditPanel(id)
+{				
+	$('#audit-panel-' + id).hide();
+	$('#audit-label-' + id).click(function () {
+		if ($('#audit-label-' + id).text() == '<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>') {
+			$('#audit-panel-' + id).show();
+			$('#audit-label-' + id).text('<?php echo $this->translate('Mask', 'ppit-core', $context->getLocale()) ?>');
+		}
+		else {
+			$('#audit-panel-' + id).hide();
+			$('#audit-label-' + id).text('<?php echo $this->translate('Show', 'ppit-core', $context->getLocale()) ?>');
+		}
+	});
+}
+
+function connectActionAnchors(type, id, action)
+{
+	// Show and anchor to the new panel
+	$('.action-btn').hide();
+	$('#order-update-panel-' + id).show();
+	$(location).attr('hash', 'order-update-panel-' + id);
+
+	// Execute the ajax request
+	xhttp = new XMLHttpRequest();
+	var route;
+	if (action == 'confirm') route = '<?php echo $this->url('orderResponse/confirm') ?>/' + id + '/confirm';
+	else if (action == 'reject') route = '<?php echo $this->url('orderResponse/confirm') ?>/' + id + '/reject';
+	else if (action == 'register') route = '<?php echo $this->url('order/update') ?>/' + id + '/register';
+	else if (action == 'ship') route = '<?php echo $this->url('orderResponse/ship') ?>/' + id + '/ship';
+	else if (action == 'deliver') route = '<?php echo $this->url('orderResponse/ship') ?>/' + id + '/deliver';
+	else if (action == 'commission') route = '<?php echo $this->url('orderResponse/ship') ?>/' + id + '/commission';
+	else if (action == 'reinit') route = '<?php echo $this->url('order/update') ?>/' + id + '/reinit';
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('order-update-panel-' + id).innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('showing panel: order-update-panel-' + id + ', url = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+
+//			connectRemoveIcon(type, 'update-remove-anchor-' + id, 'order-update-panel-' + id);
+//			connectRemoveIcon(type, 'update-foot-return-anchor-' + id, 'order-update-panel-' + id);
+			connectRemoveIcon(type, 'update-cancel-anchor-' + id, 'order-update-panel-' + id);
+			if (action == 'confirm') connectconfirmForm(id);
+			else if (action == 'reject') connectrejectForm(id);
+			else if (action == 'register') connectregisterForm(id);
+			else if (action == 'ship') connectshipForm(id);
+			else if (action == 'deliver') connectdeliverForm(id);
+			else if (action == 'commission') connectcommissionForm(id);
+			else if (action == 'reinit') connectreinitForm(id);
+
+			if (action == 'confirm') $("#quotation_identifier").focus();
+			else if (action == 'reject') $("#property_7").focus();
+			else if (action == 'register') $("#property_8").focus();
+			else if (action == 'ship') $("#input_shipment_date").focus();
+			else if (action == 'deliver') $("#input_delivery_date").focus();
+			else if (action == 'commission') $("#input_commissioning_date").focus();
+		}
+	}
+	xhttp.send();
+}
+
+// Load the order products
+function getOrderProductList(id) {
+	var xhttp = new XMLHttpRequest();
+	var route = '<?php echo $this->url('orderProduct/list') ?>/' + id;
+	xhttp.open('GET', route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('order-product-panel-' + id).innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('getOrderProductList, route = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+		}
+	}
+	xhttp.send();
+}
+
+// Load the detail panel
+function getOrderDetail(type, id) {
+
+	$('.order-detail-panel').hide();
+
+	// Ensure the target is displayed
+	$('#order-detail-panel-' + id).show();
+
+	// Anchor to the new panel
+//	$(location).attr('hash', 'form_action');
+
+	// Execute the ajax request
+	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", '<?php echo $this->url('order/detail') ?>/' + id, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('order-detail-panel-' + id).innerHTML = xhttp.responseText;
+	<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('showing panel: form_action, url = <?php echo $this->url('order/detail') ?>/' + id);
+			console.log(xhttp.responseText);
+	<?php endif;?>
+
+			$('.index-btn').attr('disabled', 'disabled');
+			connectAuditPanel(id);
+			connectRemoveIcon(type, 'remove-anchor-' + id, 'order-detail-panel-' + id);
+			$('#ok-anchor-' + id).click(function () { connectActionAnchors(type, id, 'confirm'); });
+			$('#ko-anchor-' + id).click(function () { connectActionAnchors(type, id, 'reject'); });
+			$('#register-anchor-' + id).click(function () { connectActionAnchors(type, id, 'register'); });
+			$('#ship-anchor-' + id).click(function () { connectActionAnchors(type, id, 'ship'); });
+			$('#deliver-anchor-' + id).click(function () { connectActionAnchors(type, id, 'deliver'); });
+			$('#commission-anchor-' + id).click(function () { connectActionAnchors(type, id, 'commission'); });
+			<?php if ($config['ppitOrderSettings']['recyclingMode']) : ?>
+			$('#reinit-anchor-' + id).click(function () { connectActionAnchors(type, id, 'reinit'); });
+<?php endif;?>
+			getOrderProductList(id);
+		}
+	}
+	xhttp.send();
+
+	// Highlight the clicked button (and only it in its class)
+	$('.index-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#order-detail-anchor_' + id).removeClass("btn-default").addClass("btn-primary");
+}
+
+function activateOrder(type) {
+	$('#index_action').html('');
+	$('#form_action').html();
+	
+	// Load the search panel and highlight the menu entry
+	loadPanel('index-panel', '<?php echo $this->url('order/index') ?>/' + type);
+	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
+	var orderAnchor;
+	if (type == 'part_1') orderAnchor = '#order-anchor';
+	else if (type == 'part_2') orderAnchor = '#order2-anchor';
+	else if (type == 'part_3') orderAnchor = '#order3-anchor';
+	$(orderAnchor).removeClass("btn-default").addClass("btn-primary");
+	$('#mode-text').text('<?php echo $this->translate('Todo list', 'ppit-core', $context->getLocale())?>');
+
+	getOrderList(type, '?', 'identifier', 'ASC');
+}
+$('#order-anchor').click(function () { $(location).attr('href', '<?php echo $this->url('ugap') ?>?entry=order1'); });
+$('#order2-anchor').click(function () { $(location).attr('href', '<?php echo $this->url('ugap') ?>?entry=order2'); });
+$('#order3-anchor').click(function () { $(location).attr('href', '<?php echo $this->url('ugap') ?>?entry=order3'); });

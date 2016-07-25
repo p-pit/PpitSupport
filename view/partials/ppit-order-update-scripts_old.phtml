@@ -1,0 +1,150 @@
+function check<?php echo $action ?>Properties()
+{
+	var validity = true, error;
+
+<?php foreach ($properties as $property_id => $property ) : ?>
+
+	<?php if ($property['type'] == 'input' || $property['type'] == 'textarea') : ?>
+	
+		<?php if ($property['mandatory']) : ?>
+	if (document.getElementById("<?php echo $property_id ?>").value == "") {
+		renderElement("<?php echo $property_id ?>", "<?php echo $this->translate('Please input a value', 'ppit-core', $context->getLocale()) ?>");
+		validity = false;
+	}
+    else 
+	    <?php endif ?>
+
+    if (document.getElementById("<?php echo $property_id ?>").value.length > <?php echo $property['maxSize'] ?>) {
+		renderElement("<?php echo $property_id ?>", "<?php echo $this->translate('The input is too long', 'ppit-core', $context->getLocale()) ?>");
+		validity = false;
+	}
+    else {
+		renderElement("<?php echo $property_id ?>", null);
+	}
+	
+	<?php elseif ($property['type'] == 'date' && $property['mandatory']) : ?>
+	
+ 		<?php echo $property_id ?> = document.getElementById('input_<?php echo $property_id ?>').value;
+		<?php if ($property['mandatory']) : ?>
+
+	if (<?php echo $property_id ?> == "") {
+		renderElement("input_<?php echo $property_id ?>", "<?php echo $this->translate('Please input a value', 'ppit-core', $context->getLocale()) ?>");
+		validity = false;
+	}
+ 	else {
+
+ 	<?php else : ?>
+ 	if (<?php echo $property_id ?> != "") {
+	
+	<?php endif ?>
+	
+		error = checkDate(<?php echo $property_id ?>);
+		if (error) {
+			renderElement("input_<?php echo $property_id ?>", error);
+			validity = false;
+		}
+		<?php echo $property_id ?> = encodeDate(<?php echo $property_id ?>);
+	
+	<?php if (isset($minDate)) : ?>
+		if (validity) {
+			if (<?php echo $property_id ?> < '<?php echo $minDate ?>') {
+				renderElement("input_<?php echo $property_id ?>", "<?php echo sprintf($this->translate('The date should not be earlier to %s.', 'ppit-order', $context->getLocale()), $context->decodeDate($minDate)) ?>");
+				validity = false;
+			}
+		}
+	<?php endif ?>
+		
+	<?php if (isset($maxDate)) : ?>
+		if (validity) {
+			if (<?php echo $property_id ?> > '<?php echo $maxDate ?>') {
+				renderElement("input_<?php echo $property_id ?>", "<?php echo sprintf($this->translate('The date should not be later to %s.', 'ppit-order', $context->getLocale()), $context->decodeDate($maxDate)) ?>");
+				validity = false;
+			}
+		}
+	<?php endif;?>
+	
+		if (validity) {
+			renderElement("input_<?php echo $property_id ?>", null);
+			document.getElementById('<?php echo $property_id ?>').value = <?php echo $property_id ?>;
+	    }
+	}
+
+	<?php elseif ($property['type'] == 'select' && $property['mandatory']) : ?>
+
+	if (document.getElementById("<?php echo $property_id ?>").value == "") {
+		renderElement("<?php echo $property_id ?>", "<?php echo $this->translate('Please select a value', 'ppit-core', $context->getLocale()) ?>");
+		validity = false;
+	}
+
+	<?php endif ?>
+	
+<?php endforeach ?>
+
+	return validity;
+}
+
+function connect<?php echo $action ?>Form(id)
+{
+<?php foreach ($properties as $property_id => $property) : ?>
+	<?php if ($property['type'] == 'date') : ?>
+		$('#input_<?php echo $property_id ?>').datepicker();
+	<?php endif;?>
+<?php endforeach ?>
+
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+	
+		// Check validity
+		var validity = check<?php echo $action ?>Properties(id);
+	
+		if (validity) {
+		
+			// Create a new FormData object.
+			var formData = new FormData();
+			
+			// Get the properties values
+<?php foreach ($properties as $property_id => $property) : ?>
+
+	<?php if ($property['type'] == 'input' || $property['type'] == 'date' || $property['type'] == 'textarea' || $property['type'] == 'select' || $property['type'] == 'hidden') : ?>
+			formData.append('<?php echo $property_id ?>', document.getElementById('<?php echo $property_id ?>').value);
+
+	<?php elseif ($property['type'] == 'file') : ?>
+			var fileSelect = document.getElementById('order-form');
+			if (fileSelect) {
+				var files = fileSelect.files;
+				for (var i = 0; i < files.length; i++) {
+					var file = files[i];
+					formData.append('order-form', file, file.name);
+				}
+			}
+
+	<?php endif ?>
+
+<?php endforeach ?>
+			
+			var xhttp = new XMLHttpRequest();
+			var route = '<?php echo $this->url($route) ?>/' + id + '/<?php echo $action ?>';
+			xhttp.open('POST', route, true);
+			// Set up a handler for when the request finishes.
+			xhttp.onload = function () {
+				if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+	
+<?php if ($context->getConfig()['ppitCoreSettings']['isTraceActive']) : ?>
+					console.log('post, route = ' + route);
+					console.log(xhttp.responseText);
+<?php endif;?>
+					document.getElementById('order-update-panel-' + id).innerHTML = xhttp.responseText;
+
+					$('#ok-anchor-' + id).click(function () { connectActionAnchors(id, 'confirm'); });
+					$('#ko-anchor-' + id).click(function () { connectActionAnchors(id, 'reject'); });
+					$('#register-anchor-' + id).click(function () { connectActionAnchors(id, 'register'); });
+					$('#reinit-anchor-' + id).click(function () { connectActionAnchors(id, 'reinit'); });
+				}
+			};
+			xhttp.send(formData);
+		}
+		else return false;
+	}
+}

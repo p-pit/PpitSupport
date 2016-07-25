@@ -1,0 +1,59 @@
+				<table class="table table-striped ppit_index">
+					<tr>
+						<th>&nbsp;</th>
+
+<!-- Incident date -->
+						<th align="center">
+							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="incident_date-anchor">
+								<span><?php echo $this->translate('Incident date', 'ppit-support', $context->getLocale()) ?></span>
+	<?php if ($major == 'incident_date') : ?>
+								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+	<?php endif ?>
+							</button>
+						</th>
+
+<!-- Caption -->
+						<th align="center">
+							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="caption-anchor">
+								<span><?php echo $this->translate('Caption', 'ppit-core', $context->getLocale()) ?></span>
+<?php if ($major == 'status') : ?>
+								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif ?>
+							</button>
+						</th>
+
+<!-- Status -->
+						<th align="center">
+							<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="status-anchor">
+								<span><?php echo $this->translate('Status', 'ppit-core', $context->getLocale()) ?></span>
+<?php if ($major == 'status') : ?>
+								<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif ?>
+							</button>
+						</th>
+					</tr>
+
+					<tr class="incident" colspan="4">
+						<td>
+							<button type="button" class="btn btn-default index-btn incident-add-anchor" title="<?php echo $this->translate('Add', 'ppit-core', $context->getLocale())?>" id="incident-add-anchor">
+								<span class="glyphicon glyphicon-plus" id="0-glyphicon"></span>
+							</button>
+						</td>
+	
+<?php foreach ($incidents as $incident) : ?>
+	<?php if ($context->isAllowed('incident/detail')) : ?>
+					<tr class="order">
+						<td>
+							<button type="button" class="btn btn-default index-btn incident-detail-anchor" title="<?php echo $this->translate('Detail', 'ppit-core', $context->getLocale())?>" id="incident-detail-anchor_<?php echo $incident->id ?>">
+								<span class="glyphicon glyphicon-zoom-in" id="<?php echo $incident->id ?>-glyphicon"></span>
+							</button>
+						</td>
+	
+						<td><?php echo $incident->incident_date?></td>
+						<td><?php echo $incident->caption ?></td>
+						<td><?php echo $incident->status?></td>
+					</tr>
+
+	<?php endif;?>
+		<?php endforeach; ?>
+				</table>

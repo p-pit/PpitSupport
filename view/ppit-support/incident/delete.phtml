@@ -1,0 +1,65 @@
+<?php
+$title = $this->translate('Commandes', 'ppit-order', $context->getLocale());
+$this->headTitle($title);
+echo $this->partial('/partials/menu');
+?>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+		<div class="panel panel-default">
+            <div class="panel-heading">
+				<strong><?php echo $title ?></strong>
+            </div>
+           	<div class="panel-body">
+<?php $url = $this->url('order/delete', array('id' => $this->id)) ?>
+           		<table class="table-condensed">
+<?php if ($message == 'OK') : ?>
+<?php 
+	if ($order->type == 'Add' || $order->type == 'Import') $route = 'order';
+    else $route = 'order/mcdIndex';
+?>
+					<tr>
+						<td colspan="2">
+							<a class="glyphicon glyphicon-circle-arrow-left" href="<?php echo $this->url($route);?>"></a>
+							<a href="<?php echo $this->url('order');?>"><?php echo $this->translate('Return', 'ppit-core', $context->getLocale()) ?></a>
+						</td>
+					</tr>
+<?php endif;?>
+				</table>
+
+<h3 align="center"><?php echo $this->translate('Delete an order');?></h3>
+<?php
+    echo $this->partial('/partials/generic-display', array('header' => $header));
+?>
+
+				<form action="<?php echo $url; ?>" method="post">
+
+<!-- Global message -->
+<?php if ($message == 'OK') : ?>
+					<div class="form-group">
+						<div class="col-sm-12"><p><?php echo $this->translate('Your request have been registered', 'ppit-core', $context->getLocale()) ?></p></div>
+					</div>
+<?php endif;?>
+
+<!--  CSRF -->
+<?php $element = $csrfForm->get('csrf') ?>
+					<div class="form-group">
+						<?php echo $this->formElement($element) ?>
+<?php if ($this->formElementErrors($element)) : ?>
+						<div class="col-sm-12"><p class="help-block"><?php echo $this->translate('The form has expired, please input again', 'ppit-core', $context->getLocale()) ?></p></div>
+<?php endif;?>
+					</div>
+<?php if ($message != 'OK') : ?>
+				    <div class="form-group">
+						<div class="col-sm-5">&nbsp;</div>
+						<div class="col-sm-7">
+							<input type="submit" class="btn btn-primary" name="del" value="<?php echo $this->translate('Yes') ?>" />
+						    &nbsp;&nbsp;
+							<a href="<?php echo $this->url('order');?>"><?php echo $this->translate('Cancel') ?></a>
+						</div>
+					</div>
+<?php endif;?>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

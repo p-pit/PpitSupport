@@ -1,0 +1,127 @@
+
+function connectImapMessageRemoveIcon(mailbox, id, target)
+{
+	$('#' + id).click(function () {
+		$('#' + target).hide();
+		getImapMessageList(mailbox, 'identifier', 'DESC');
+	});
+}
+
+function sortImapMessageList(mailbox, criterion) {
+	var dir;
+	ascCriterion = $('.glyphicon-triangle-top').first().parent().attr('id');
+	descCriterion = $('.glyphicon-triangle-bottom').first().parent().attr('id');
+	if (criterion + '-anchor' == ascCriterion) dir = 'DESC'; else dir = 'ASC';
+	getImapMessageList(mailbox, criterion, dir);
+}
+
+// Load the list
+function getImapMessageList(mailbox, major, dir) {		
+
+	// Execute the ajax request
+	route = '<?php echo $this->url('imapMessage/index') ?>' + '?mailbox=' + mailbox + '&major=' + major + ((dir =='ASC') ? '&dir=ASC' : '&dir=DESC');
+ 	xhttp = new XMLHttpRequest();
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('index_action').innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('showing panel: index_action, url = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+			// Connect the sort anchors
+			$('.ppit-sort-anchor').each(function () {
+				$(this).click(function () {
+					sortImapMessageList(mailbox, $(this).attr('id').split('-')[0]);
+				});
+			});
+
+			// Connect the import anchor
+			$('#imap-message-import-anchor').click(function () {
+				showImapMessageDetail(mailbox, '0', 'import');
+			});
+
+			// Connect the select anchors
+			$('.imap-message-select').each(function () {
+				$(this).click(function () {
+					showImapMessageDetail(mailbox, $(this).attr('id').split('_')[1], 'select');
+				});
+			});
+		}
+	}
+	xhttp.send();
+}
+
+function showImapMessageDetail(mailbox, id, action)
+{
+	$('#form_action').show();
+	$(location).attr('hash', 'form_action');
+
+	// Execute the ajax request
+	xhttp = new XMLHttpRequest();
+	var route;
+	if (action == 'select') route = '<?php echo $this->url('imapMessage/select') ?>/' + id;
+	xhttp.open("GET", route, true);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+			document.getElementById('form_action').innerHTML = xhttp.responseText;
+<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
+			console.log('showing panel: form_action' + ', url = ' + route);
+			console.log(xhttp.responseText);
+<?php endif;?>
+
+			connectImapMessageRemoveIcon(mailbox, 'remove-anchor', 'form_action');
+			connectImapMessageRemoveIcon(mailbox, 'return-anchor', 'form_action');
+			connectImapMessageRemoveIcon(mailbox, 'cancel-anchor', 'form_action');
+			if (action == 'select') connectSelectForm(mailbox, id);
+		}
+	}
+	xhttp.send();
+}
+
+// Select action
+function connectSelectForm(mailbox, id)
+{
+	var form = document.getElementById('ppit-form');
+	form.onsubmit = function(event) {
+		
+		event.preventDefault();
+	
+		// Create a new FormData object.
+		var formData = new FormData();
+		
+		// Get the properties values
+		formData.append('update_time', document.getElementById('update_time').value);
+		
+		var xhttp = new XMLHttpRequest();
+		var route = '<?php echo $this->url('imapMessage/select') ?>/' + id;
+		xhttp.open('POST', route, true);
+		// Set up a handler for when the request finishes.
+		xhttp.onload = function () {
+			if (xhttp.readyState == 4 <?php if (!$context->getConfig()['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+
+<?php if ($context->getConfig()['ppitCoreSettings']['isTraceActive']) : ?>
+				console.log('post, route = ' + route);
+				console.log(xhttp.responseText);
+<?php endif;?>
+				document.getElementById('form_action').innerHTML = xhttp.responseText;
+				getImapMessageList(mailbox, 'identifier', 'DESC');
+
+				connectRemoveIcon(mailbox, 'remove-anchor', 'form_action');
+				connectRemoveIcon(mailbox, 'return-anchor', 'form_action');
+			}
+		}
+		xhttp.send(formData);
+	}
+}
+
+function activateImapMessage(mailbox) {
+	
+	// Load the search panel and highlight the menu entry
+	$('.menu-btn').removeClass("btn-primary").addClass("btn-default");
+	$('#imapMessage-anchor').removeClass("btn-default").addClass("btn-primary");
+
+	getImapMessageList(mailbox, 'id', 'DESC');
+}
+$('#imapMessage-anchor').click(function () { $(location).attr('href', '<?php echo $this->url('index') ?>?entry=imap-message'); });
+$('#imapMessage-anchor').click(function () { activateImapMessage('INBOX'); });

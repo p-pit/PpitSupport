@@ -1,0 +1,73 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<strong>
+			<?php echo $this->translate('Incidents', 'ppit-support', $context->getLocale());?>: <?php echo $type ?>
+			(<span id="mode-text"></span>)
+		</strong>
+	</div>
+	<div class="panel-body">
+
+<!-- Filter on type -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><span class="glyphicon glyphicon-search"></span></label>
+			<div class="col-sm-7">
+	    		<button type="button" class="form-control btn btn-default btn-xs" title="<?php echo $this->translate('Erase', 'ppit-core', $context->getLocale()) ?>" id="erase-button">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+			</div>
+		</div>
+
+<!-- identifier -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Type', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input type="text" size="5" id="search_type" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+<!-- Status -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Status', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input type="text" size="5" id="search_status" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+<!-- Incident date -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('School year', 'ppit-studies', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+	    		<input type="text" size="3" id="search_min_incident_date" class="form-control" placeholder="<?php echo $this->translate('Min', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<div class="col-sm-7">
+	    		<input type="text" size="3" id="search_max_incident_date" class="form-control" placeholder="<?php echo $this->translate('Max', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+<!-- Caption -->
+		<div class="form-group">
+			<label class="col-sm-5 control-label"><?php echo $this->translate('Caption', 'ppit-core', $context->getLocale()) ?></label>
+			<div class="col-sm-7">
+				<input type="text" size="5" id="search_caption" class="form-control" placeholder="<?php echo $this->translate('Contains', 'ppit-core', $context->getLocale()) ?>" />
+			</div>
+		</div>
+
+	    <div>&nbsp;</div>
+
+<!-- Actions -->
+	    <div>
+	    		<button type="button" class="btn btn-default" title="<?php echo $this->translate('Export', 'ppit-core', $context->getLocale()) ?>" id="export-button">
+					<span class="glyphicon glyphicon-cloud-download"></span>
+					<span><?php echo $this->translate('Export', 'ppit-core', $context->getLocale())?></span>
+				</button>
+	    </div>
+	    
+		<div>&nbsp;</div>
+
+<!-- Add or update section -->
+		<div id="incident-list-panel"></div>
+	</div>
+</div>

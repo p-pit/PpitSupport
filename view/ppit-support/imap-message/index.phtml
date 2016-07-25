@@ -1,0 +1,45 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<strong><?php echo $this->translate('Messages', 'ppit-support', $context->getLocale()); ?>: <?php echo $mailbox ?></strong>
+    </div>
+    <div class="panel-body">
+		<table class="table table-striped">
+			<tr>
+				<td>&nbsp;</td>
+				<td><?php echo $this->translate('Select message', 'ppit-support', $context->getLocale()) ?></td>
+				<td>
+					<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="identifier-anchor">
+						<span><?php echo $this->translate('Identifier', 'ppit-core', $context->getLocale()) ?></span>
+<?php if ($major == 'identifier') : ?>
+						<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif;?>
+					</button>
+				</td>
+				<td>
+					<button type="button" class="btn btn-default btn-xs ppit-sort-anchor" id="type-anchor">
+						<span><?php echo $this->translate('Type', 'ppit-core', $context->getLocale()) ?></span>
+<?php if ($major == 'type') : ?>
+						<span class="glyphicon glyphicon-triangle-<?php echo ($dir == 'ASC') ? 'top' : 'bottom' ?>"></span>
+<?php endif;?>
+					</button>
+				</td>
+				<td><?php echo $this->translate('Transmission time', 'ppit-order', $context->getLocale())?>
+				<td><?php echo $this->translate('Status', 'ppit-core', $context->getLocale())?>
+			</tr>
+<?php foreach ($imapMessages as $imapMessage) : ?>
+			<tr>
+				<td>
+					<a class="glyphicon glyphicon-cloud-download" title="<?php echo $this->translate('Download', 'ppit-core', $context->getLocale()) ?>" target="_blank" href="<?php echo $this->url('imapMessage/download', array('id' => $imapMessage->id)) ?>"></a>
+				</td>
+				<td>
+					<checkbox class="imap-message-select" id="imap-message-select_<?php echo $imapMessage.id ?>" name="imap-message-select_<?php echo $imapMessage.id ?>" <?php if (!$imapMessage->status) echo ' selected="selected"' ?>/>
+				</td>
+				<td><?php echo $imapMessage->identifier ?></td>
+				<td><?php echo $imapMessage->type ?></td>
+				<td><?php echo $imapMessage->update_time ?></td>
+				<td><?php echo $this->translate(substr($imapMessage->status, 0, 30), 'ppit-support', $context->getLocale()) ?></td>
+			</tr>
+<?php endforeach; ?>
+		</table>
+	</div>
+</div>

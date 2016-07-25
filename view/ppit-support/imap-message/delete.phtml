@@ -1,0 +1,105 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<?php echo $this->translate('Delete an instance', 'ppit-core', $context->getLocale());?>
+		<div class="btn-group pull-right">
+			<?php echo $this->partial('/partials/action-widget.phtml', array(
+					'context' => $context,
+					'target' => 'form_action',
+					'id' => 'delete-remove-anchor',
+					'glyphicon' => 'glyphicon-remove',
+					'class' => 'index-btn',
+					'title' => $this->translate('Return to list', 'ppit-core', $context->getLocale()),
+			)) ?>
+ 		</div>
+	</div>
+	<div class="panel-body">
+		<table class="table-condensed">
+			<tr>
+				<td align="right"><strong><?php echo $this->translate('Instance', 'ppit-core', $context->getLocale()) ?></strong></td>
+				<td><?php echo $instance->caption?></td>
+			</tr>
+		</table>
+			
+		<!-- Form header -->
+		<?php echo $this->partial('/partials/form-header', array(
+			'id' => $id,
+			'update_time' => $instance->update_time,
+			'message' => $message,
+			'error' => $error,
+			'csrfForm' => $csrfForm,
+			'context' => $context,
+		)) ?>
+
+<?php if ($message == 'OK') : ?>
+
+<!-- Foot return link -->
+		<div class="form-group" id="foot_return_link">
+			<div class="col-sm-5">&nbsp;</div>
+			<div class="col-sm-7">
+				<?php echo $this->partial('/partials/action-widget.phtml', array(
+						'context' => $context,
+						'target' => 'form_action',
+						'id' => 'delete-foot-return-anchor',
+						'class' => 'index-btn',
+						'text' => $this->translate('Close', 'ppit-core', $context->getLocale()),
+				)) ?>
+			</div>
+		</div>
+
+<?php else : ?>
+
+<!-- Submit button -->
+	    <div class="form-group">
+			<div class="col-sm-5">&nbsp;</div>
+			<div class="col-sm-7">
+				<input name="submit" type="submit" id="delete-submit-button" class="btn btn-danger" value="<?php echo $this->translate('Confirm', 'ppit-core', $context->getLocale()) ?>">
+				&nbsp;&nbsp;
+				<?php echo $this->partial('/partials/action-widget.phtml', array(
+						'context' => $context,
+						'target' => 'form_action',
+						'id' => 'delete-cancel-anchor',
+						'class' => 'index-btn',
+						'text' => $this->translate('Cancel', 'ppit-core', $context->getLocale()),
+				)) ?>
+			</div>
+		</div>
+
+<?php endif;?>
+
+	</div>
+</div>
+
+<script id='instance/delete-script'>
+
+//Return to list
+eval(document.getElementById('delete-remove-anchor-script').innerHTML);
+
+<?php if ($message == 'OK') : ?>
+
+	eval(document.getElementById('delete-foot-return-anchor-script').innerHTML);
+
+<?php else : ?>
+
+	eval(document.getElementById('delete-cancel-anchor-script').innerHTML);
+
+// Submit
+<?php echo $this->partial('/partials/form-script', array(
+		'context' => $context,
+		'id' => 'submit-button',
+		'checkFunction' => 'checkForm',
+		'formRoute' => $this->url('instance/delete', array('id' => $id)),
+		'formScript' =>'instance/delete-script',
+		'properties' => array('update_time' => 'hidden'),
+		'mainRoute' => $this->url('instance/index'),
+		'mainScript' =>'instance/index-script',
+		'hideForm' => false,
+)) ?>
+
+<?php endif;?>
+
+function checkForm() 
+{
+	return true;
+}
+
+</script>
