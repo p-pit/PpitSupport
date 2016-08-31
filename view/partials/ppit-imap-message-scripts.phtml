@@ -23,12 +23,12 @@ function getImapMessageList(mailbox, major, dir) {
  	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			document.getElementById('index_action').innerHTML = xhttp.responseText;
-<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
-			console.log('showing panel: index_action, url = ' + route);
-			console.log(xhttp.responseText);
-<?php endif;?>
 			// Connect the sort anchors
 			$('.ppit-sort-anchor').each(function () {
 				$(this).click(function () {
@@ -47,6 +47,9 @@ function getImapMessageList(mailbox, major, dir) {
 					showImapMessageDetail(mailbox, $(this).attr('id').split('_')[1], 'select');
 				});
 			});
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+	<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -63,17 +66,20 @@ function showImapMessageDetail(mailbox, id, action)
 	if (action == 'select') route = '<?php echo $this->url('imapMessage/select') ?>/' + id;
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			document.getElementById('form_action').innerHTML = xhttp.responseText;
-<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
-			console.log('showing panel: form_action' + ', url = ' + route);
-			console.log(xhttp.responseText);
-<?php endif;?>
 
 			connectImapMessageRemoveIcon(mailbox, 'remove-anchor', 'form_action');
 			connectImapMessageRemoveIcon(mailbox, 'return-anchor', 'form_action');
 			connectImapMessageRemoveIcon(mailbox, 'cancel-anchor', 'form_action');
 			if (action == 'select') connectSelectForm(mailbox, id);
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+	<?php endif;?>
 		}
 	}
 	xhttp.send();

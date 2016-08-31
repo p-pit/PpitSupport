@@ -244,26 +244,7 @@ return array(
 	),
 
 	'ppitRoles' => array(
-			'accountant' => array(
-					'show' => true,
-					'labels' => array(
-							'en_US' => 'Accountant',
-							'fr_FR' => 'Comptable',
-					),
-			),
-			'sales_manager' => array(
-					'show' => true,
-					'labels' => array(
-							'en_US' => 'Sales manager',
-							'fr_FR' => 'Vendeur',
-					),
-			),
-			'business_owner' => array(
-					'show' => true,
-					'labels' => array(
-							'en_US' => 'Business owner',
-							'fr_FR' => 'Gestion',
-					),
+			'ppitSupport' => array(
 			),
 	),
 

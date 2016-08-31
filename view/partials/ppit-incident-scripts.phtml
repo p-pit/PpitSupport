@@ -159,12 +159,12 @@ function getOrderList(type, params, major, dir) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			document.getElementById('order-list-panel').innerHTML = xhttp.responseText;
-<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
-			console.log('showing panel: order-list-panel, url = ' + route);
-			console.log(xhttp.responseText);
-<?php endif;?>
 			
 			// Connect the sort anchors
 			$('.ppit-sort-anchor').each(function () {
@@ -182,6 +182,9 @@ function getOrderList(type, params, major, dir) {
 					getOrderDetail(type, $(this).attr('id').split('_')[1]);
 				});
 			});
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+	<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -221,12 +224,12 @@ function connectActionAnchors(type, id, action)
 	else if (action == 'reinit') route = '<?php echo $this->url('order/update') ?>/' + id + '/reinit';
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
+	<?php endif;?>
 			document.getElementById('order-update-panel-' + id).innerHTML = xhttp.responseText;
-<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
-			console.log('showing panel: order-update-panel-' + id + ', url = ' + route);
-			console.log(xhttp.responseText);
-<?php endif;?>
 
 //			connectRemoveIcon(type, 'update-remove-anchor-' + id, 'order-update-panel-' + id);
 //			connectRemoveIcon(type, 'update-foot-return-anchor-' + id, 'order-update-panel-' + id);
@@ -245,6 +248,9 @@ function connectActionAnchors(type, id, action)
 			else if (action == 'ship') $("#input_shipment_date").focus();
 			else if (action == 'deliver') $("#input_delivery_date").focus();
 			else if (action == 'commission') $("#input_commissioning_date").focus();
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+	<?php endif;?>
 		}
 	}
 	xhttp.send();
@@ -282,12 +288,12 @@ function getOrderDetail(type, id) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", '<?php echo $this->url('order/detail') ?>/' + id, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 <?php if (!$config['ppitCoreSettings']['isTraceActive']) echo '&& xhttp.status == 200' ?>) {
-			document.getElementById('order-detail-panel-' + id).innerHTML = xhttp.responseText;
-	<?php if ($config['ppitCoreSettings']['isTraceActive']) : ?>
-			console.log('showing panel: form_action, url = <?php echo $this->url('order/detail') ?>/' + id);
-			console.log(xhttp.responseText);
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.readyState == 4) {
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			if (xhttp.status == 200) {
 	<?php endif;?>
+			document.getElementById('order-detail-panel-' + id).innerHTML = xhttp.responseText;
 
 			$('.index-btn').attr('disabled', 'disabled');
 			connectAuditPanel(id);
@@ -302,6 +308,9 @@ function getOrderDetail(type, id) {
 			$('#reinit-anchor-' + id).click(function () { connectActionAnchors(type, id, 'reinit'); });
 <?php endif;?>
 			getOrderProductList(id);
+	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
+			}
+	<?php endif;?>
 		}
 	}
 	xhttp.send();
