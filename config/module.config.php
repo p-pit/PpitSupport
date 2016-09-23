@@ -244,7 +244,7 @@ return array(
 	),
 
 	'ppitRoles' => array(
-			'ppitSupport' => array(
+			'PpitSupport' => array(
 			),
 	),
 
