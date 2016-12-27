@@ -1,8 +1,8 @@
 <?php
 namespace PpitSupport\Model;
 
-use PpitContact\Model\Community;
 use PpitContact\Model\Contract;
+use PpitCore\Model\Community;
 use PpitCore\Model\Context;
 use PpitCore\Model\Generic;
 use PpitCore\Model\Instance;

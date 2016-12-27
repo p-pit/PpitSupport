@@ -1,10 +1,10 @@
 <?php
 namespace PpitSupport\Model;
 
-use PpitContact\Model\Community;
-use PpitContact\Model\Vcard;
 use PpitContact\Model\ContactMessage;
+use PpitCore\Model\Community;
 use PpitCore\Model\Context;
+use PpitCore\Model\Vcard;
 use PpitDocument\Model\Document;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
