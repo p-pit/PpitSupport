@@ -159,7 +159,7 @@ function getOrderList(type, params, major, dir) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -224,7 +224,7 @@ function connectActionAnchors(type, id, action)
 	else if (action == 'reinit') route = '<?php echo $this->url('order/update') ?>/' + id + '/reinit';
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -288,7 +288,7 @@ function getOrderDetail(type, id) {
 	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", '<?php echo $this->url('order/detail') ?>/' + id, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {

@@ -23,7 +23,7 @@ function getImapMessageList(mailbox, major, dir) {
  	xhttp = new XMLHttpRequest();
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
@@ -66,7 +66,7 @@ function showImapMessageDetail(mailbox, id, action)
 	if (action == 'select') route = '<?php echo $this->url('imapMessage/select') ?>/' + id;
 	xhttp.open("GET", route, true);
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == 401) location.href = '<?php echo $this->url('ppitUser/expired')?>';
+		if (xhttp.status == 401) location.href = '<?php echo $this->url('user/expired')?>';
 		if (xhttp.readyState == 4) {
 	<?php if (!$config['ppitCoreSettings']['isTraceActive']) : ?>
 			if (xhttp.status == 200) {
