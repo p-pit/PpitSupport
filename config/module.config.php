@@ -243,11 +243,6 @@ return array(
  		),
 	),
 
-	'ppitRoles' => array(
-			'PpitSupport' => array(
-			),
-	),
-
 	'ppitSupportDependencies' => array(
 	),
 );
